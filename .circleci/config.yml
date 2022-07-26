@@ -79,7 +79,7 @@ jobs:
       # Your job code here
       - checkout
       - restore_cache
-      -run:
+      - run:
         name: Run frontend test
         command: |
           cd frontend
