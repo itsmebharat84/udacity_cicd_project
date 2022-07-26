@@ -187,32 +187,41 @@ jobs:
               Backend_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
                 --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                --output text))
+                --output text)
               echo "$BACKEND_AWS_PUBLIC_IP" >> .circleci/ansible/inventory.txt
               cat .circleci/ansible/inventory.txt
-  #    - persist_to_workspace:
-  #        root: ~/
-  #       paths:
-  #         - project/.circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+         paths:
+           - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
 
-  #configure-infrastructure:
-  #  docker:
-  #    # Docker image here that supports Ansible
-  #  steps:
-  #    # Checkout code from git
-  #    # Add ssh keys with fingerprint
+  configure-infrastructure:
+    docker:
+      # Docker image here that supports Ansible
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprint: ['3b:84:ae:d2:60:e4:f4:28:aa:72:90:e3:65:b9:23:80']
+      # Checkout code from git
+      # Add ssh keys with fingerprint
       # attach workspace
-  #    - run:
-  #        name: Install dependencies
-  #        command: |
-  #          # Your code here
-  #          exit 1
-  #    - run:
-  #        name: Configure server
-  #        command: |
-  #          # Your code here
-  #          exit 1
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible # install the dependencies needed for your playbook
+      - run:
+          name: Configure server
+          working_directory: ./.circleci/ansible
+          command: |
+            pwd &&
+            ls -la 
+            ct inventory 
+            ansible-playbook -i inventory configure-server.yaml
+            
       # Here's where you will add some code to rollback on failure      
 
   #run-migrations:
