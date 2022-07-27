@@ -265,10 +265,11 @@ jobs:
 
   deploy-frontend:
     docker:
+      - image: amazon/aws-cli:latest
       # Docker image here that supports AWS CLI
-       - image: amazon/aws-cli:latest
+       
     steps:
-       - checkout 
+      - checkout 
       # Checkout code from git
       - run:
           name: Install dependencies
