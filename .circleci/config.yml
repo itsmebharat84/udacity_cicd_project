@@ -188,7 +188,7 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:project,Values=udapeople-backend-infra" \
               --output text)
-              echo "BACKEND_IP=${BACKEND_IP}" >> .circleci/ansible/inventory.txt
+              echo "${BACKEND_IP}" >> .circleci/ansible/inventory.txt
               
               cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
