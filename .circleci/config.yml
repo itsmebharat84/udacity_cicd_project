@@ -399,10 +399,10 @@ jobs:
           name: Get backend url
           command: |
             # your code here
-            BACKEND_IP=`aws --region us-east-1 ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            BACKEND_IP=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text`
+              --filters "Name=tag:project,Values=udapeople" \
+              --output text)
       - run:
           name: Backend smoke test.
           command: |
