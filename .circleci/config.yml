@@ -467,6 +467,7 @@ jobs:
 
 cleanup:
     docker:
+      - image: amazon/aws-cli
       # Docker image here
     steps:
       # Checkout code from git
