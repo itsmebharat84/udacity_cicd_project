@@ -228,7 +228,7 @@ jobs:
   run-migrations:
     docker:
       # Docker image here that supports NodeJS
-        - image: circleci/node:13.8.0
+        - image: circleci/node:latest
     steps:
       - checkout 
       - restore_cache:
@@ -243,9 +243,9 @@ jobs:
               npm install typescript
               npm --update install python3 npm
               #npm audit fix --audit-level=critical --force
-              #npm audit fix --force
+              npm audit fix --force
               # If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
-              #npm audit --audit-level=critical
+              npm audit --audit-level=critical
               npm run migrations >> migrations_dump.txt 
       - run:
           name: Send migration results to memstash
