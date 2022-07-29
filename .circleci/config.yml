@@ -15,7 +15,7 @@ commands:
             echo "Destroying environment: << parameters.workflow_id >> "
             aws cloudformation delete-stack --region us-east-1 --stack-name backend-<<parameters.workflow_id>>
             aws cloudformation delete-stack --region us-east-1 --stack-name frontend-<<parameters.workflow_id>>
-            aws --region us-east-1 s3 rm s3://udapeople-<<parameters.workflow_id>>--recursive
+            #aws --region us-east-1 s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
             #exit 1
 
   revert-migrations:
