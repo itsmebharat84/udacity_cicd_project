@@ -283,7 +283,7 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: amazon/aws-cli:latest
+      - image: python:3.7-alpine3.11
       # Docker image here that supports AWS CLI
        
     steps:
@@ -331,7 +331,7 @@ jobs:
             apk add --no-cache python3 py3-pip
             pip3 install --upgrade pip
             pip3 install awscli
-            aws --region us-west-2 s3 cp frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws --region us-east-1 s3 cp frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
                     
   deploy-backend:
     docker:
@@ -340,7 +340,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprint: ['3b:84:ae:d2:60:e4:f4:28:aa:72:90:e3:65:b9:23:80']
+          fingerprint: ['9b:2a:2d:55:ee:c6:dd:bd:68:40:bb:da:cb:85:bc:b5']
       # Checkout code from git
       # Add ssh keys with fingerprint
       # attach workspace
@@ -455,9 +455,9 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
-    #  - smoke-test:
-    #      requires: [deploy-backend, deploy-frontend]
-    #  - cloudfront-update:
-    #      requires: [smoke-test]
-    #  - cleanup:
-    #      requires: [cloudfront-update]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
+      - cloudfront-update:
+          requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
