@@ -163,11 +163,8 @@ jobs:
               --template-file .circleci/files/backend.yml \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-              --tags project=udapeople-backend-infra
-              #--tags project=your-tag \
-              # --stack-name "your back-end stack name with workflow id" \
-              # --parameter-overrides ID="your workflow id"  
-              # exit 1
+              --tags project=udapeople
+              
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -176,17 +173,14 @@ jobs:
               --template-file .circleci/files/frontend.yml \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-              --tags project=udapeople-frontend-infra
-              #--tags project=your-tag \
-              # --stack-name "your front-end stack name with workflow id" \
-              # --parameter-overrides ID="your workflow id"  
-              # exit 1
+              --tags project=udapeople
+              
       - run:
-          name: Add back-end ip to ansible inventory
+          name: Add the EC2 instance IP to the Ansible inventory
           command: |
               BACKEND_IP=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:project,Values=udapeople-backend-infra" \
+              --filters "Name=tag:project,Values=udapeople" \
               --output text)
               echo "${BACKEND_IP}" >> .circleci/ansible/inventory.txt
               
