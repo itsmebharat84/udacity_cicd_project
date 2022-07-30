@@ -401,7 +401,7 @@ jobs:
             pip install awscli
             aws --version
       - run:
-          name: Get backend url
+          name: Get backend url and smoke test 
           command: |
             # your code here
             BACKEND_IP=$(aws --region us-east-1 ec2 describe-instances \
@@ -411,16 +411,13 @@ jobs:
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             curl "${API_URL}"
-      - run:
-          name: Backend smoke test.
-          command: |
-            echo "API_URL = ${API_URL}" 
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0
             else
                 return 1
             fi
+      
       - run:
           name: Frontend smoke test.
           command: |
