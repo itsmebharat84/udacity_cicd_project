@@ -455,6 +455,12 @@ jobs:
           command: |
             # your code here
             
+            export OldWorkflowID=$(aws cloudformation \
+                    list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+                    --no-paginate --output text)
+            echo OldWorkflowID: "${OldWorkflowID}"
+            echo ${OldWorkflowID} >> ~/OldWorkflowID.txt
+            
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name InitialStack \
@@ -485,11 +491,11 @@ jobs:
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
             
             #export STACKS=[] #put the list of stacks here
-            echo OldWorkflowID: "${OldWorkflowID}"
+            #echo OldWorkflowID: "${OldWorkflowID}"
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
             echo Stack names: "${STACKS[@]}"  
-            echo Current Workflow ID : "${CIRCLE_WORKFLOW_ID:0:7}"
+            #echo Current Workflow ID : "${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Remove old stacks and files
           command: |
@@ -497,6 +503,8 @@ jobs:
                     list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
                     --no-paginate --output text)
             echo OldWorkflowID: "${OldWorkflowID}"
+            
+            export OldWorkflowID=`cat ~/OldWorkflowID.txt`
             
             if [[ "udapeople-${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
               then
