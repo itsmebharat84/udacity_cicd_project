@@ -489,6 +489,11 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
+          name: Install dependencies
+          command: |
+            # your code here
+            yum install -y curl tar gzip
+      - run:
           name: Get old stack workflow id
           command: |
             # your code here
