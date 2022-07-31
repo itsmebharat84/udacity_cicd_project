@@ -455,23 +455,24 @@ jobs:
           command: |
             # your code here
             
-            export OldWorkflowID=$(aws cloudformation \
-                    list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-                    --no-paginate --output text)
-            echo OldWorkflowID: "${OldWorkflowID}"
-            echo ${OldWorkflowID} >> .circleci/files/OldWorkflowID.txt
-            
-            cat .circleci/files/OldWorkflowID.txt
+            aws cloudformation \
+            list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+            --no-paginate --output text > ~/OldWorkflowID.txt
             
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name InitialStack \
               --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
+            
+            echo Current Workflow Id: "${CIRCLE_WORKFLOW_ID:0:7}"
+            echo oldworkflowid
+            cat ~/OldWorkflowID.txt
+            
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/.circleci/files/OldWorkflowID.txt
+            - OldWorkflowID.txt
                        
       # Here's where you will add some code to rollback on failure  
       - destroy-environment:
@@ -492,31 +493,21 @@ jobs:
             # your code here
             yum install -y curl tar gzip
       - attach_workspace:
-          at: ~/project/.circleci/files/OldWorkflowID.txt
+          at: ~/
       - run:
           name: Get old stack workflow id
           command: |
-            # your code here
-            export OldWorkflowID=$(aws cloudformation \
-                    list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-                    --no-paginate --output text)
+            export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
             echo OldWorkflowID: "${OldWorkflowID}"
-            echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
-            
-            #export STACKS=[] #put the list of stacks here
-            #echo OldWorkflowID: "${OldWorkflowID}"
-            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-              --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
-            echo Stack names: "${STACKS[@]}"  
-            #echo Current Workflow ID : "${CIRCLE_WORKFLOW_ID:0:7}"
+            echo $OldWorkflowID 
+
       - run:
           name: Remove old stacks and files
           command: |
-            cd .circleci/files
-            cat OldWorkflowID.txt
-            OldWorkflowID=`cat OldWorkflowID.txt`
-            echo "oldworkspace=${OldWorkflowID}"
-            OnlyWorkflowID=`cat OldWorkflowID.txt | awk -F "-" '{print $NF}'`
+            export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
+            echo OldWorkflowID: "${OldWorkflowID}"
+            
+            OnlyWorkflowID=$(cat ~/OldWorkflowID.txt | awk -F "-" '{print $NF}')
             export ${OnlyWorkflowID}
             echo "onlyID = ${OnlyWorkflowID}"
             
