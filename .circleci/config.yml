@@ -250,11 +250,14 @@ jobs:
       - run:
           name: Install awscli
           command: |
-            sudo apt-get update
-            sudo apt-get install npm python3 -y 
-            sudo apt-get install python3-pip -y
-            sudo apt-get install unzip  -y
-            sudo pip3 install awscli
+            sudo apt-get -y -qq update
+            #sudo apt-get install npm python3 -y 
+            #sudo apt-get install python3-pip -y
+            #sudo apt-get install unzip  -y
+            #sudo pip3 install awscli
+            sudo apt-get -qq install awscli
+            sudo apt-get -y -qq install python3
+            sudo npm install pm2 -g
      
       - run:
           name: Run migrations
@@ -274,7 +277,8 @@ jobs:
               #echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
               #echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env" 
               npm install
-              #npm run build
+              npm audit fix 
+              npm run build
               npm run migrations > migrations_dump.txt
               
               #npm install 
