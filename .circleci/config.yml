@@ -256,7 +256,7 @@ jobs:
             #sudo apt-get install unzip  -y
             #sudo pip3 install awscli
             sudo apt-get -qq install awscli
-            sudo apt-get -y -qq install python3
+            sudo apt-get -y -qq install python3 npm
             sudo npm install pm2 -g
      
       - run:
