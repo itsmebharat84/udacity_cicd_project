@@ -1,4 +1,4 @@
 URL01:  https://github.com/itsmebharat84/udacity_cicd_project.git
-URL02:  http://udapeople-2094081.s3.amazonaws.com/index.html#/employees
+URL02:  http://udapeople-a4dcae2.s3.amazonaws.com/index.html#/employees
 URL03:  http://d1cf0or49h2yjx.cloudfront.net/#/employees
 
